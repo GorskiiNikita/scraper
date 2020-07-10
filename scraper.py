@@ -114,12 +114,21 @@ def main():
                 if data:
                     write_data_to_excel(data)
                     update_stop_link(data[0]['Asset link'])
+                    print(f'Successfully saved under "{settings.XLSX_FILENAME}"')
+                else:
+                    print('No new articles were scraped!')
                 return
             resource = Resource(link)
             data.append(resource.get_data())
-            print(link)
 
         main_page.next_page()
+
+    if data:
+        write_data_to_excel(data)
+        update_stop_link(data[0]['Asset link'])
+        print(f'Successfully saved under "{settings.XLSX_FILENAME}"')
+    else:
+        print('No new articles were scraped!')
 
 
 if __name__ == '__main__':
