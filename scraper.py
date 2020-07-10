@@ -1,5 +1,7 @@
 import requests
 
+import settings
+
 from bs4 import BeautifulSoup as bs
 from openpyxl import load_workbook, Workbook
 
@@ -63,12 +65,15 @@ class Resource:
 
 
 def write_data_to_excel(data):
-    dest_file = 'empty.xlsx'
     created = False
 
-    try:
-        wb = load_workbook(filename=dest_file)
-    except FileNotFoundError:
+    if not settings.NEW_XLSX:
+        try:
+            wb = load_workbook(filename=settings.XLSX_FILENAME)
+        except FileNotFoundError:
+            wb = Workbook()
+            created = True
+    else:
         wb = Workbook()
         created = True
 
@@ -82,7 +87,7 @@ def write_data_to_excel(data):
         ws[f'A{i}'], ws[f'B{i}'], ws[f'C{i}'] = 'BankInfoSecurity from ISMG', data[i - length - 1]['Asset'], data[i - length - 1]['Asset link']
         ws[f'D{i}'], ws[f'E{i}'], ws[f'F{i}'] = data[i - length - 1]['Company'], data[i - length - 1]['Type'], data[i - length - 1]['Date Posted']
 
-    wb.save(dest_file)
+    wb.save(settings.XLSX_FILENAME)
 
 
 def get_stop_link():
@@ -107,8 +112,9 @@ def main():
     while main_page.get_links():
         for link in main_page.get_links():
             if link == stop_link:
-                write_data_to_excel(data)
-                update_stop_link(data[0]['Asset link'])
+                if data:
+                    write_data_to_excel(data)
+                    update_stop_link(data[0]['Asset link'])
                 return
             resource = Resource(link)
             data.append(resource.get_data())
