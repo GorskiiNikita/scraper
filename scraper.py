@@ -92,7 +92,7 @@ def write_data_to_excel(data):
 def get_stop_link():
     try:
         with open('stop_link.txt', 'r') as f:
-            stop_link = f.readline()
+            stop_link = f.readline().strip()
     except FileNotFoundError:
         stop_link = ''
     return stop_link
@@ -107,19 +107,24 @@ def main():
     data = []
     stop_link = get_stop_link()
     main_page = Page()
+    count = 0
 
+    print(f'loaded {count} assets', end='')
     while main_page.get_links():
         for link in main_page.get_links():
             if link == stop_link:
                 if data:
                     write_data_to_excel(data)
                     update_stop_link(data[0]['Asset link'])
-                    print(f'Successfully saved under "{settings.XLSX_FILENAME}"')
+                    print(f'\nSuccessfully saved under "{settings.XLSX_FILENAME}"')
                 else:
                     print('No new articles were scraped!')
                 return
             resource = Resource(link)
             data.append(resource.get_data())
+            count += 1
+            print('\r', end='')
+            print(f'loaded {count} assets', end='')
 
         main_page.next_page()
 
