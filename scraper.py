@@ -1,8 +1,11 @@
+import sys
+
 import requests
 import settings
 
 from bs4 import BeautifulSoup as bs
 from openpyxl import load_workbook, Workbook
+from datetime import datetime
 
 
 class Page:
@@ -104,23 +107,37 @@ def update_stop_link(link):
 
 
 def main():
+    try:
+        date_input = sys.argv[1]
+        try:
+            date_obj = datetime.strptime(date_input, '%m/%d/%Y')
+            date_limit = date_obj.date()
+        except ValueError:
+            exit('Please, enter date in format "mm/dd/yyyy"')
+        except Exception as e:
+            print('An unexpected error occurred while processing the date limit. Error description:', e)
+            exit('Exited.')
+    except IndexError:
+        date_limit = False
+
     data = []
     stop_link = get_stop_link()
     main_page = Page()
-    count = 0
 
+    count = 0
     print(f'loaded {count} assets', end='')
     while main_page.get_links():
         for link in main_page.get_links():
-            if link == stop_link:
+            resource = Resource(link)
+            if link == stop_link and not date_limit or \
+                    date_limit and date_limit > datetime.strptime(resource.get_data()['Date Posted'], '%B %d, %Y').date():
                 if data:
                     write_data_to_excel(data)
                     update_stop_link(data[0]['Asset link'])
                     print(f'\nSuccessfully saved under "{settings.XLSX_FILENAME}"')
                 else:
-                    print('No new articles were scraped!')
+                    print('\nNo new articles were scraped!')
                 return
-            resource = Resource(link)
             data.append(resource.get_data())
             count += 1
             print('\r', end='')
@@ -131,9 +148,9 @@ def main():
     if data:
         write_data_to_excel(data)
         update_stop_link(data[0]['Asset link'])
-        print(f'Successfully saved under "{settings.XLSX_FILENAME}"')
+        print(f'\nSuccessfully saved under "{settings.XLSX_FILENAME}"')
     else:
-        print('No new articles were scraped!')
+        print('\nNo new articles were scraped!')
 
 
 if __name__ == '__main__':
