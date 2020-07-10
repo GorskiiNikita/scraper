@@ -86,9 +86,17 @@ def write_data_to_excel(data):
 
 
 def get_stop_link():
-    with open('stop_link.txt', 'r') as f:
-        stop_link = f.readline()
+    try:
+        with open('stop_link.txt', 'r') as f:
+            stop_link = f.readline()
+    except FileNotFoundError:
+        stop_link = ''
     return stop_link
+
+
+def update_stop_link(link):
+    with open('stop_link.txt', 'w') as f:
+        f.write(link)
 
 
 def main():
@@ -100,6 +108,7 @@ def main():
         for link in main_page.get_links():
             if link == stop_link:
                 write_data_to_excel(data)
+                update_stop_link(data[0]['Asset link'])
                 return
             resource = Resource(link)
             data.append(resource.get_data())
