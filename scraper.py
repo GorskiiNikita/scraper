@@ -1,5 +1,4 @@
 import requests
-
 import settings
 
 from bs4 import BeautifulSoup as bs
