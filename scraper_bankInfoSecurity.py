@@ -82,12 +82,13 @@ def write_data_to_excel(data):
     ws = wb.active
 
     if created:
-        ws['A1'], ws['B1'], ws['C1'], ws['D1'], ws['E1'], ws['F1'] = 'Platform', 'Asset', 'Asset link', 'Company', 'Type', 'Date Posted'
+        ws['A1'], ws['B1'], ws['C1'], ws['D1'], ws['E1'], ws['F1'], ws['G1'] = 'Platform', 'Asset', 'Asset_link', 'Company', 'Type', 'Date Posted', 'GEO'
 
     length = len(ws['A'])
     for i in range(length + 1, len(data) + length + 1):
-        ws[f'A{i}'], ws[f'B{i}'], ws[f'C{i}'] = 'BankInfoSecurity from ISMG', data[i - length - 1]['Asset'], data[i - length - 1]['Asset link']
+        ws[f'A{i}'], ws[f'B{i}'], ws[f'C{i}'] = 'BankInfoSecurity from ISMG', data[i - length - 1]['Asset'], data[i - length - 1]['Asset_link']
         ws[f'D{i}'], ws[f'E{i}'], ws[f'F{i}'] = data[i - length - 1]['Company'], data[i - length - 1]['Type'], data[i - length - 1]['Date Posted']
+        ws[f'G{i}'] = 'USA'
 
     wb.save(settings.XLSX_FILENAME)
 

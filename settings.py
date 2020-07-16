@@ -1,2 +1,2 @@
-NEW_XLSX = False
-XLSX_FILENAME = 'data.xlsx'
+NEW_XLSX = True
+XLSX_FILENAME = 'data2.xlsx'
