@@ -86,7 +86,7 @@ def write_data_to_excel(data):
 
     length = len(ws['A'])
     for i in range(length + 1, len(data) + length + 1):
-        ws[f'A{i}'], ws[f'B{i}'], ws[f'C{i}'] = 'BankInfoSecurity from ISMG', data[i - length - 1]['Asset'], data[i - length - 1]['Asset_link']
+        ws[f'A{i}'], ws[f'B{i}'], ws[f'C{i}'] = 'BankInfoSecurity from ISMG', data[i - length - 1]['Asset'], data[i - length - 1]['Asset link']
         ws[f'D{i}'], ws[f'E{i}'], ws[f'F{i}'] = data[i - length - 1]['Company'], data[i - length - 1]['Type'], data[i - length - 1]['Date Posted']
         ws[f'G{i}'] = 'USA'
 
